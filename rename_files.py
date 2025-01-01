@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import json
 
-
+# when True, will attempt to rename originalFileName to newFilename
+# when False, will attempt to rename newFilename to originalFileName
 TOGGLE = True
 
 def generate_maps():
@@ -18,7 +22,9 @@ def generate_maps():
 def main():
 
     m = generate_maps()
-    directory = r"C:\Users\nolan\Downloads\ps2\roms\DVD"
+    
+    # change string to point to directory you want to rename files
+    directory = r""
 
     file_paths = [os.path.join(directory, f) for f in os.listdir(directory)]
     for file in file_paths:

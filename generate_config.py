@@ -9,9 +9,11 @@ import argparse
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-extensions = ['.iso']
-original_folder = r"D:\ps2\DVD"
-new_folder = r"C:\Users\nolan\Downloads\ps2\roms\DVD"
+extensions = []
+
+# The two folders with the same files with different filenames
+folder_1 = r""
+folder_2 = r""
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Compare two files.")
@@ -102,8 +104,8 @@ def main():
     args = parse_args()
 
     # if --partialhash CLI flag is used, then it's set to True and it only checks 10% of each files hash
-    new_map = generate_map_hash(new_folder, args.partial_hash)
-    original_map = generate_map_hash(original_folder, args.partial_hash)
+    new_map = generate_map_hash(folder_2, args.partial_hash)
+    original_map = generate_map_hash(folder_1, args.partial_hash)
 
     output_data = []  # List to store all file information
     count = 0
