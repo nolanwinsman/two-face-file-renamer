@@ -3,13 +3,14 @@
 
 import os
 import time
+import json
 import xxhash
 import argparse
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 extensions = ['.iso']
-original_folder = r"F:\ps2\DVD"
+original_folder = r"D:\ps2\DVD"
 new_folder = r"C:\Users\nolan\Downloads\ps2\roms\DVD"
 
 def parse_args():
@@ -23,11 +24,10 @@ class all_files_config:
         self.files = []
 
 class file_info:
-    def __init__(self, filename, filesize, xxhash, partial_hash):
+    def __init__(self, filename, filesize, xhash):
         self.filename = filename
         self.filesize = filesize
-        self.xxhash = xxhash
-        self.partial_hash = partial_hash
+        self.xhash = xhash
 
 def get_filesize_kb(file_path):
     return os.path.getsize(file_path) / 1024
@@ -104,7 +104,8 @@ def main():
     # if --partialhash CLI flag is used, then it's set to True and it only checks 10% of each files hash
     new_map = generate_map_hash(new_folder, args.partial_hash)
     original_map = generate_map_hash(original_folder, args.partial_hash)
-    
+
+    output_data = []  # List to store all file information
     count = 0
     for key in original_map.keys():
         if key in new_map.keys():
@@ -112,8 +113,20 @@ def main():
             original_file = original_map[key]
             new_file = new_map[key]
             print(f"File matches, Original File: {original_file} New File: {new_file}")
+            # Add the information to the output data list
+            output_data.append({
+                "originalFileName": original_file,
+                "newFileName": new_file,
+                "xhash": key
+            })
     print(f"Total Matching Files {count}")
 
+    # Write the output data to a JSON file
+    output_json_path = os.path.join(os.getcwd(), "file_mappings.json")
+    with open(output_json_path, "w", encoding="utf-8") as json_file:
+        json.dump(output_data, json_file, indent=4)
+
+    print(f"File mappings saved to {output_json_path}")
     return 0
 
 if __name__ == "__main__":
